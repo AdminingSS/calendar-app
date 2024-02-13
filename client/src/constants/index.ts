@@ -1,2 +1,2 @@
-const API_HOST = process.env.API_HOST || 'http://localhost:5000'
+const API_HOST = process.env.API_HOST
 export const API_URL = API_HOST + '/api/'
