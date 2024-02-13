@@ -127,6 +127,12 @@ app.put("/api/labels/:id", async (req, res) => {
 app.delete("/api/labels/:id", async (req, res) => {
   try {
     const { id } = req.params;
+
+    await Task.updateMany(
+      { labels: { $elemMatch: { _id: id } } },
+      { $pull: { labels: { _id: id } } }
+    );
+
     const label = await Label.findByIdAndDelete(id);
 
     res.json(label);
