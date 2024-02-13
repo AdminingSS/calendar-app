@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import axios from "axios";
 import { DragDropContext } from "react-beautiful-dnd";
 
+import { API_URL } from "./constants";
+
 import ModalEl from "./components/Modal";
 import Calendar from "./components/Calendar";
 
@@ -55,7 +57,7 @@ const App = () => {
 
       setTasks(newTasks);
 
-      axios.put(`http://localhost:5000/api/tasks/${task._id}`, task);
+      axios.put(`${API_URL}tasks/${task._id}`, task);
     }
   }, [tasks])
 
@@ -63,13 +65,13 @@ const App = () => {
     const fetchData = async () => {
       try {
         const tasksResponse = await axios.get<Task[]>(
-            "http://localhost:5000/api/tasks"
+            `${API_URL}tasks`
         );
         const tasksData = tasksResponse.data;
         setTasks(tasksData);
 
         const labelsResponse = await axios.get<Label[]>(
-            "http://localhost:5000/api/labels"
+            `${API_URL}labels`
         );
         const labelsData = labelsResponse.data;
         setLabels(labelsData);

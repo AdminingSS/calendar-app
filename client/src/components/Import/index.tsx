@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import axios from "axios";
 
+import { API_URL } from "../../constants";
+
 type ImportProps = {
     setRequest: (value: boolean) => void;
 };
@@ -26,7 +28,7 @@ const Import = (props: ImportProps) => {
                     const data = JSON.parse(reader.result as string);
 
                     if (Array.isArray(data) && data.every((item) => item._id)) {
-                        axios.post("http://localhost:5000/api/tasks/import", data)
+                        axios.post(`${API_URL}tasks/import`, data)
                             .then(() => {
                                 setRequest(true)
                             })

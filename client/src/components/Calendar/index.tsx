@@ -5,6 +5,8 @@ import { Droppable, DroppableProps } from 'react-beautiful-dnd';
 import clsx from 'clsx';
 import { createUseStyles } from 'react-jss';
 
+import { API_URL } from "../../constants";
+
 import { Task, Label, Modal } from "../../App";
 
 import TaskEl from "../Task";
@@ -134,7 +136,7 @@ const Calendar = (props: CalendarProps) => {
         const fetchData = async () => {
             try {
                 const holidaysResponse = await axios.get<Holiday[]>(
-                    `http://localhost:5000/api/holidays/${currentYear}/UA`
+                    `${API_URL}holidays/${currentYear}/UA`
                 );
                 const holidaysData = holidaysResponse.data;
                 const holidaysObject: Record<string, string> = {};

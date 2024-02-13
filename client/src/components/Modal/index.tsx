@@ -5,10 +5,13 @@ import { createUseStyles } from 'react-jss'
 
 import { Modal, Label, Task } from "../../App";
 
+import { API_URL } from "../../constants";
+
 import LabelEl from "../Label";
 import LabelRedactor from "../LabelRedactor";
 
 import styles from './styles';
+
 
 type ModalProps = {
     modal: Modal;
@@ -59,12 +62,12 @@ const ModalEl = (props: ModalProps) => {
     const handleSave = () => {
         if (data) {
             if (modal.type === "editTask" && data._id) {
-                axios.put(`http://localhost:5000/api/tasks/${data._id}`, data)
+                axios.put(`${API_URL}tasks/${data._id}`, data)
                     .then(() => {
                         setRequest(true)
                     })
             } else if (modal.type === "newTask") {
-                axios.post(`http://localhost:5000/api/tasks/`, data)
+                axios.post(`${API_URL}tasks/`, data)
                     .then(() => {
                         setRequest(true)
                     })
@@ -76,7 +79,7 @@ const ModalEl = (props: ModalProps) => {
     const handleDelete = () => {
         if (data) {
             if (modal.type === "editTask"  && data._id) {
-                axios.delete(`http://localhost:5000/api/tasks/${data._id}`)
+                axios.delete(`${API_URL}tasks/${data._id}`)
                     .then(() => {
                         setRequest(true)
                     })

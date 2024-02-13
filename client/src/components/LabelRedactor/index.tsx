@@ -3,6 +3,8 @@ import axios from 'axios';
 import { CompactPicker } from 'react-color';
 import { createUseStyles } from 'react-jss';
 
+import { API_URL } from "../../constants";
+
 import { Label } from "../../App";
 
 import styles from './styles';
@@ -46,13 +48,13 @@ const LabelRedactor = (props: LabelRedactorProps) => {
 
     const handleSubmit = () => {
         if (label?._id) {
-            axios.put(`http://localhost:5000/api/labels/${label._id}`, value)
+            axios.put(`${API_URL}labels/${label._id}`, value)
                 .then(() => {
                     setRequest(true)
                 })
             if (setEditMode) setEditMode(false)
         } else {
-            axios.post(`http://localhost:5000/api/labels/`, value)
+            axios.post(`${API_URL}labels/`, value)
                 .then(() => {
                     setRequest(true)
                 })
