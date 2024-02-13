@@ -1,3 +1,4 @@
+require("mongodb");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -7,7 +8,13 @@ const app = express();
 
 const MONGO_URL = process.env.MONGODB_URI || 'mongodb://localhost:27017/calendar-app'
 
-mongoose.connect(MONGO_URL, {});
+mongoose.connect(MONGO_URL).catch(error => {
+  console.error(error)
+});
+
+mongoose.connection.on('error', error => {
+  console.error(error)
+});
 
 const labelSchema = new mongoose.Schema({
   text: String,
@@ -158,6 +165,10 @@ app.post("/api/tasks/import", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+});
+
+app.get('/', function(req, res) {
+  res.send('api server');
 });
 
 const PORT = process.env.PORT || 5000;
