@@ -5,7 +5,9 @@ const axios = require("axios");
 
 const app = express();
 
-mongoose.connect("mongodb://localhost:27017/calendar-app", {});
+const MONGO_URL = process.env.MONGODB_URI || 'mongodb://localhost:27017/calendar-app'
+
+mongoose.connect(MONGO_URL, {});
 
 const labelSchema = new mongoose.Schema({
   text: String,
