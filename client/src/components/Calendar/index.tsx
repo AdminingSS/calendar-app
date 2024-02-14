@@ -196,7 +196,7 @@ const Calendar = (props: CalendarProps) => {
                                         setModal={setModal}
                                     />
                                 ))}
-                                <span style={{ display: 'none' }}>{provided.placeholder}</span>
+                                <span>{provided.placeholder}</span>
                             </div>
                         )}
                     </StrictModeDroppable>
