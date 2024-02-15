@@ -146,9 +146,11 @@ const ModalEl = (props: ModalProps) => {
                     <button onClick={handleSave}>
                         Save Task
                     </button>
-                    <button onClick={handleDelete}>
-                        Delete Task
-                    </button>
+                    {modal.type === "editTask" && (
+                        <button onClick={handleDelete}>
+                            Delete Task
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

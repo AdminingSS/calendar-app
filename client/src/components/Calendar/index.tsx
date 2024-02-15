@@ -129,7 +129,7 @@ const Calendar = (props: CalendarProps) => {
     const addTask = useCallback((e, date) => {
         if(e.target !== e.currentTarget || e.defaultPrevented) return
 
-        setModal({ type: "newTask", data: { _id: "", title: "", date, labels: [] } });
+        setModal({ type: "newTask", data: { _id: "", title: "", date, labels: [], index: 0 } });
     }, [])
 
     useEffect(() => {
@@ -187,15 +187,17 @@ const Calendar = (props: CalendarProps) => {
                                 className={clsx(classes.cell, date.getMonth() !== currentMonth && classes.cellOther)}
                             >
                                 <span>{date.getDate()} {holidays[format(date, "yyyy-MM-dd")]}</span>
-                                {filterTasks(date).map((task, index) => (
-                                    <TaskEl
-                                        key={task._id}
-                                        task={task}
-                                        labels={labels}
-                                        index={index}
-                                        setModal={setModal}
-                                    />
-                                ))}
+                                {filterTasks(date)
+                                    .sort((a, b) => a.index - b.index)
+                                    .map((task, index) => (
+                                        <TaskEl
+                                            key={task._id}
+                                            task={task}
+                                            labels={labels}
+                                            index={task.index}
+                                            setModal={setModal}
+                                        />
+                                    ))}
                                 <span>{provided.placeholder}</span>
                             </div>
                         )}

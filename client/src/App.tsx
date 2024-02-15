@@ -13,6 +13,7 @@ export type Task = {
   title: string;
   date: Date | string;
   labels: Label[];
+  index: number;
 };
 
 export type Label = {
@@ -33,7 +34,7 @@ const App = () => {
   const [search, setSearch] = useState<string>("");
   const [modal, setModal] = useState<Modal | null>(null);
 
-  const handleDragEnd = useCallback ((result: any) => {
+  const handleDragEnd = useCallback (async (result: any) => {
     const { source, destination, draggableId, type } = result;
 
     if (!destination) {
@@ -48,16 +49,31 @@ const App = () => {
     }
 
     if (type === "task") {
-      const newTasks = [...tasks];
-      const taskIndex = newTasks.findIndex((task) => task._id === draggableId);
-      const [task] = newTasks.splice(taskIndex, 1);
+      const destinationTasks = tasks.filter(tsk => tsk.date === destination.droppableId && tsk._id !== draggableId)
+
+      const task = tasks.find((task) => task._id === draggableId);
+
+      if(!task) return;
 
       task.date = destination.droppableId;
-      newTasks.splice(destination.index, 0, task);
+      task.index = destination.index;
 
-      setTasks(newTasks);
+      destinationTasks.splice(destination.index, 0, task);
 
-      axios.put(`${API_URL}tasks/${task._id}`, task);
+      destinationTasks.forEach((tsk, index) => {
+        tsk.index = index;
+      })
+
+      const sourceTasks = tasks.filter(tsk => tsk.date === source.droppableId && tsk.date !== destination.droppableId)
+
+      sourceTasks.forEach((tsk, index) => {
+        tsk.index = index;
+      })
+
+      axios.post(`${API_URL}tasks/bulk`, destinationTasks.concat(sourceTasks))
+          .then(() => {
+            setRequest(true)
+          })
     }
   }, [tasks])
 
