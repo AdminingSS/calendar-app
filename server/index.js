@@ -27,6 +27,7 @@ const taskSchema = new mongoose.Schema({
   title: String,
   date: String,
   labels: [labelSchema],
+  index: Number,
 });
 
 const Task = mongoose.model("Task", taskSchema);
@@ -37,7 +38,7 @@ app.use(express.json());
 
 app.get("/api/tasks", async (req, res) => {
   try {
-    const tasks = await Task.find();
+    const tasks = await Task.find().sort({ index: 1 });
 
     res.json(tasks);
   } catch (error) {
@@ -48,7 +49,11 @@ app.get("/api/tasks", async (req, res) => {
 app.post("/api/tasks", async (req, res) => {
   try {
     const { date, title, labels } = req.body;
-    const task = new Task({ date, title, labels });
+
+    const lastTask = await Task.findOne({ date }).sort({ index: -1 });
+    const lastIndex = lastTask ? lastTask.index : 0;
+
+    const task = new Task({ date, title, labels, index: lastIndex + 1 });
 
     await task.save();
 
@@ -61,10 +66,10 @@ app.post("/api/tasks", async (req, res) => {
 app.put("/api/tasks/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { date, title, labels } = req.body;
+    const { date, title, labels, index } = req.body;
     const task = await Task.findByIdAndUpdate(
       id,
-      { date, title, labels },
+      { date, title, labels, index },
       { new: true }
     );
 
@@ -78,6 +83,11 @@ app.delete("/api/tasks/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const task = await Task.findByIdAndDelete(id);
+
+    await Task.updateMany(
+      { date: task.date, index: { $gt: task.index } },
+      { $inc: { index: -1 } }
+    );
 
     res.json(task);
   } catch (error) {
@@ -163,11 +173,37 @@ app.post("/api/tasks/import", async (req, res) => {
       return res.status(400).json({ message: "Invalid data format" });
     }
 
-    const safeData = data.map(({ title, date, labels}) => ({title, date, labels}))
+    const safeData = data.map(({ title, date, labels, index}) => ({title, date, labels, index}))
 
     const result = await Task.collection.insertMany(safeData);
 
     res.json({ message: `Imported ${result.insertedCount} documents into Tasks` });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/api/tasks/bulk", async (req, res) => {
+  try {
+    const data = req.body;
+
+    if (!Array.isArray(data)) {
+      return res.status(400).json({ message: "Invalid data format" });
+    }
+
+    for (const obj of data) {
+      const filter = { _id: obj._id };
+      const update = { $set: {
+          "title": obj.title,
+          "date": obj.date,
+          "labels": obj.labels,
+          "index": obj.index,
+        } };
+
+      await Task.updateOne(filter, update);
+    }
+
+    res.json({ message: `OK` });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

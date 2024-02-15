@@ -129,7 +129,7 @@ const Calendar = (props: CalendarProps) => {
     const addTask = useCallback((e, date) => {
         if(e.target !== e.currentTarget || e.defaultPrevented) return
 
-        setModal({ type: "newTask", data: { _id: "", title: "", date, labels: [] } });
+        setModal({ type: "newTask", data: { _id: "", title: "", date, labels: [], index: 0 } });
     }, [])
 
     useEffect(() => {
