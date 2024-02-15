@@ -32,7 +32,7 @@ const TaskEl = (props: TaskProps) => {
     };
 
     return (
-        <Draggable draggableId={task._id} index={task.index}>
+        <Draggable draggableId={task._id} index={index}>
             {(provided) => (
                 <div
                     className={classes.root}

@@ -187,15 +187,17 @@ const Calendar = (props: CalendarProps) => {
                                 className={clsx(classes.cell, date.getMonth() !== currentMonth && classes.cellOther)}
                             >
                                 <span>{date.getDate()} {holidays[format(date, "yyyy-MM-dd")]}</span>
-                                {filterTasks(date).map((task, index) => (
-                                    <TaskEl
-                                        key={task._id}
-                                        task={task}
-                                        labels={labels}
-                                        index={index}
-                                        setModal={setModal}
-                                    />
-                                ))}
+                                {filterTasks(date)
+                                    .sort((a, b) => a.index - b.index)
+                                    .map((task, index) => (
+                                        <TaskEl
+                                            key={task._id}
+                                            task={task}
+                                            labels={labels}
+                                            index={task.index}
+                                            setModal={setModal}
+                                        />
+                                    ))}
                                 <span>{provided.placeholder}</span>
                             </div>
                         )}

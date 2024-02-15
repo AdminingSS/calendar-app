@@ -49,8 +49,7 @@ const App = () => {
     }
 
     if (type === "task") {
-      const destinationDate = new Date(destination.droppableId).toISOString()
-      const destinationTasks = tasks.filter(tsk => tsk.date === destinationDate && tsk._id !== draggableId)
+      const destinationTasks = tasks.filter(tsk => tsk.date === destination.droppableId && tsk._id !== draggableId)
 
       const task = tasks.find((task) => task._id === draggableId);
 
@@ -65,8 +64,7 @@ const App = () => {
         tsk.index = index;
       })
 
-      const sourceDate = new Date(source.droppableId).toISOString()
-      const sourceTasks = tasks.filter(tsk => tsk.date === sourceDate && tsk.date !== destinationDate)
+      const sourceTasks = tasks.filter(tsk => tsk.date === source.droppableId && tsk.date !== destination.droppableId)
 
       sourceTasks.forEach((tsk, index) => {
         tsk.index = index;
